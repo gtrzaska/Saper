@@ -1,0 +1,361 @@
+﻿<htmnml>
+<head>
+<link rel="stylesheet" href="style.css"/>
+<style>
+ input{
+ 	margin:10px 0;
+ }
+
+</style>
+<script>
+var  tab = [];
+var x 
+var y
+var o, p
+function plansza(){
+var wys = document.getElementById("wysokosc").value
+var szer = document.getElementById("szerokosc").value
+var mines = document.getElementById("miny").value
+//TWORZENIE PLANSZY
+	var k = document.getElementById("tabela")
+			k.innerHTML = ""
+            k.style.position = "absolute"
+        
+            for(i =0; i<wys; i++){
+            	tab[i]=[]
+                for(j =0; j<szer ; j++)
+            {
+            	tab[i][j] = 0;
+            	o=i
+            	p=j
+				tab[o][p] =	0
+                var b = document.createElement("div");
+                b.style.width = "30px";
+                b.style.height = "30px";
+                b.style.marginTop= 30  * i  +"px"
+                b.style.marginLeft= 30 * j +"px"
+                b.style.border = "solid black 1px "
+                b.style.position = "absolute"
+				b.style.fontSize = "1px"
+				b.style.color = "transparent"
+				b.style.background = "url('obrazy/pole1.png')"
+				b.addEventListener("click", onDown);
+                 b.id = "x"+j+"y"+i;
+				 b.className = "p0"
+				 
+				 
+				 var bomb = document.getElementById("miny").value
+				 	k.oncontextmenu = function(e) {//KLIKNIĘCIE PPM		
+				var m = e.target;
+				if(m.className != "null"){
+				
+			if(m.innerHTML == ""){
+			m.style.background = "url('obrazy/flaga.png')"
+			m.innerHTML = ","
+			bomb-=1
+			}
+			else if(m.innerHTML == ","){
+			m.innerHTML = "."
+			
+			m.style.background = "url('obrazy/pyt.png')"}
+			else if (m.innerHTML == "."){
+			m.innerHTML = ""
+			m.style.background = "url('obrazy/pole1.png')"
+			bomb+=1}
+			document.getElementById("bomby").innerHTML ="bomby :" +bomb;   } 
+			return false;
+			};
+			
+                k.appendChild(b);
+
+            }
+   }
+//MINY
+   				while (mines > 0) {
+					var rx = Math.floor(Math.random() * szer);
+					var ry = Math.floor(Math.random() * wys);
+					if (tab[rx][ry] >= 0){
+						tab[rx][ry] = -1;
+						//document.getElementById("x"+rx+"y"+ry).innerHTML = tab[rx][ry];		
+						document.getElementById("x"+rx+"y"+ry).className = "mina"						
+					}
+					else {
+						do {
+							rx = Math.floor(Math.random() * szer);
+							ry = Math.floor(Math.random() * wys);
+						} while (tab[rx][ry] <= 0)
+						tab[rx][ry] = -1;
+					//	document.getElementById("x"+rx+"y"+ry).innerHTML = tab[rx][ry];
+						document.getElementById("x"+rx+"y"+ry).className = "mina"						
+					}
+	
+						var q = szer - 1
+						var w = szer - 1
+					
+//ILOŚĆ MIN OBOK
+				if(rx >= 1 && ry > 0 ){
+   					 o = rx -1
+   					 p=ry-1
+				if(document.getElementById("x"+o+"y"+p).className != "mina"){
+   					  tab[o][p] ++	
+   					document.getElementById("x"+o+"y"+p).className ="p"+ tab[o][p];}}
+   					if( rx >= 1 ){
+   					 o = rx -1
+   					 p=ry
+   					 
+   					if(document.getElementById("x"+o+"y"+p).className != "mina"){
+   					 	tab[o][p] ++
+   					document.getElementById("x"+o+"y"+p).className = "p"+ tab[o][p];}}
+   					if(rx >= 1 && ry < w){
+   					 o = rx -1
+   					 p=ry+1
+   					
+   					if(document.getElementById("x"+o+"y"+p).className != "mina"){
+   					 	tab[o][p] ++
+   					document.getElementById("x"+o+"y"+p).className="p"+ tab[o][p];}}
+
+   					if(rx < q && ry > 0){
+   						//alert(szer)
+   					 o = rx +1
+   					 p=ry-1
+   					 
+   					if(document.getElementById("x"+o+"y"+p).className != "mina"){
+   					 	tab[o][p] ++
+   					document.getElementById("x"+o+"y"+p).className ="p"+ tab[o][p];}}
+   					if(rx < q){
+   					 o = rx +1
+   					 p=ry
+   					 
+   					if(document.getElementById("x"+o+"y"+p).className != "mina"){
+   					 	tab[o][p] ++
+   					document.getElementById("x"+o+"y"+p).className ="p"+ tab[o][p];}}
+
+   					if(rx < q && ry < w ){
+   					 o = rx +1
+   					 p=ry+1
+   					 
+   					if(document.getElementById("x"+o+"y"+p).className != "mina"){
+   					 	tab[o][p] ++
+   					document.getElementById("x"+o+"y"+p).className ="p"+ tab[o][p];}}
+
+   					if( ry > 0 ){
+   					o = rx
+   					 p=ry-1
+   					
+   					if(document.getElementById("x"+o+"y"+p).className != "mina"){
+   					 	tab[o][p] ++
+   					document.getElementById("x"+o+"y"+p).className ="p"+ tab[o][p];}}
+
+   					if( ry < w){
+   					o = rx
+   					 p=ry+1
+   					 
+   					if(document.getElementById("x"+o+"y"+p).className != "mina"){
+   					 	tab[o][p] ++
+   					document.getElementById("x"+o+"y"+p).className ="p"+ tab[o][p];}}
+   					
+					mines--;
+				}
+
+
+
+}
+
+//KLIKNIĘCIE LPM
+pkt = 0
+   function onDown(e) {
+
+			var m = e.target;
+			
+			if( m.className=="p0"){
+               m.style.background = null
+			   m.style.backgroundColor = "#DDDDDD"
+                    m.innerHTML  = ""
+				m.className =null	
+				pkt++
+			
+                }
+				if( m.className == "p1"){
+               m.style.background = null
+			   m.style.backgroundColor = "#DDDDDD"
+			   m.style.fontSize = "24px";
+			   m.style.color="#0000CC"
+			   m.style.fontWeight="bold"
+               m.style.textAlign = " center";
+               m.innerHTML  = "1"
+			   m.className = null		
+			pkt++
+                }
+				if( m.className =="p2"){
+               m.style.background = null
+			   m.style.backgroundColor = "#DDDDDD"
+			   m.style.fontSize = "24px";
+			   m.style.color="#006600"
+			   m.style.fontWeight="bold"
+               m.style.textAlign = " center";
+               m.innerHTML  = "2"
+			   m.className = null
+			   pkt++
+
+                }
+				if( m.className =="p3"){
+               m.style.background = null
+			   m.style.backgroundColor = "#DDDDDD"
+			   m.style.fontSize = "24px";
+			   m.style.color="red"
+			   m.style.fontWeight="bold"
+               m.style.textAlign = " center";
+               m.innerHTML  = "3"
+			   m.className = null
+			   pkt++
+
+                }
+				if( m.className =="p4"){
+               m.style.background = null
+			   m.style.backgroundColor = "#DDDDDD"
+			   m.style.fontSize = "24px";
+			   m.style.color="#000066"
+			   m.style.fontWeight="bold"
+               m.style.textAlign = " center";
+               m.innerHTML  = "4"
+			   m.className = null
+				pkt++
+                }	
+				if( m.className =="p5"){
+               m.style.background = null
+			   m.style.backgroundColor = "#DDDDDD"
+			   m.style.fontSize = "24px";
+			   m.style.color="#660000"
+			   m.style.fontWeight="bold"
+               m.style.textAlign = " center";
+               m.innerHTML  = "5"
+			   m.className == null
+			   pkt++
+
+                }
+				if( m.className =="p6"){
+               m.style.background = null
+			   m.style.backgroundColor = "#DDDDDD"
+			   m.style.fontSize = "24px";
+			   m.style.color="#9900FF"
+			   m.style.fontWeight="bold"
+               m.style.textAlign = " center";
+               m.innerHTML  = "6"
+			   m.className = null
+			   pkt++
+			   
+				}
+				if( m.className =="p7"){
+               m.style.background = null
+			   m.style.backgroundColor = "#DDDDDD"
+			   m.style.fontSize = "24px";
+			   m.style.color="#660000"
+			   m.style.fontWeight="bold"
+               m.style.textAlign = " center";
+			   m.className == null
+               m.innerHTML  = "7"
+			   pkt++
+			   
+			   
+                }
+				if( m.className =="p8"){
+               m.style.background = null
+			   m.style.backgroundColor = "#DDDDDD"
+			   m.style.fontSize = "24px";
+			   m.style.color="#CC3300"
+			   m.style.fontWeight="bold"
+               m.style.textAlign = " center";
+               m.innerHTML  = "8"
+			   m.className = null
+			   pkt++
+			   
+				}
+				if(pkt == document.getElementById("szerokosc").value * document.getElementById("wysokosc").value - document.getElementById("miny").value  ){
+				alert("!!! Udało ci się wygrać w czasie :" + document.getElementById("time").innerHTML + "!!!")
+				}
+				if( m.className == "mina"){
+				
+			var bomba = document.getElementsByClassName("mina")
+			for (i = 0; i < bomba.length; i++) {
+               bomba[i].style.background = "url('obrazy/mina.png')"
+			   bomba[i].innerHTML = ""
+			   }
+			   m.style.background = "url('obrazy/mina2.png')"
+			var r = confirm("Porazka! Aby rozpoczac od nowa kliknij OK");
+			if (r == true) {
+				location.reload();
+			} 
+				}
+				
+				}
+				
+var h, mi, s, cs, ms, countStarted;
+h = 0;
+mi = 0;
+s = 0;
+cs = 0;
+countStarted = false;
+
+//ZEGAR
+function count()
+{
+	cs++;
+	
+	if(cs == 100)
+	{
+		cs = 0;
+		s++;
+		
+		if(s == 60)
+		{
+			s = 0;
+			mi++;
+			
+			if(mi == 60)
+			{
+				mi = 0;
+				h++;
+			}
+		}
+	}
+	refresh();
+}
+
+function refresh()
+{
+	var czas;
+	czas = h + ":" + mi + ":" + s;
+	document.getElementById("time").innerHTML = czas;    
+}
+
+function startCount()
+{
+    if(countStarted === false)
+    {
+        countStarted = true;
+
+        setInterval(count, 10);
+    }
+}
+
+</script>
+</head>
+<body  >
+<div style="width:250px">
+<label>
+wysokość: <input type="text" id="wysokosc"/></label>
+<label>
+szerokosc: <input type="text" id="szerokosc"/>
+</label>
+<label>
+miny:   <input type="text" id="miny"/>
+</label></div>
+<input type="submit" id="ok" value="ok" onclick="plansza(); startCount()"  />
+
+<div id="timebox" style="position:relative">
+		<p id="time" style="color:black"></p><p id="bomby" style="color:black;top:-15;left:100px;position:absolute"></p>
+	</div>
+<div id="tabela">
+</div>
+</body>
+</html>
